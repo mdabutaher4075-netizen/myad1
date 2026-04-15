@@ -5,15 +5,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: mcr.microsoft.com/playwright:v1.40.0-jammy # এটি সব রিকোয়ারমেন্ট সহ একটি রেডি ইমেজ
     steps:
-      - name: Running 9Hits
+      - name: Preparing and Running
         run: |
-          curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 -o 9hits.tar.bz2
-          tar -xjvf 9hits.tar.bz2
-          cd 9hits-viewer-linux-x64
-          chmod +x 9hits-viewer
-          ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
-          ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
-        timeout-minutes: 350
+          # সব লাইব্রেরি একসাথে ইনস্টল
+          sudo apt-get update && sudo apt-get install -y libnss3 libgbm1 libasound2 libxshmfence1 libx11-xcb1
+          
+          # ডাউনলোড এবং সরাসরি এক্সট্রাক্ট
+          curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 | tar -xj
+          
+          # ফাইল পারমিশন ঠিক করা
+          chmod +x ./9hits-viewer-linux-x64/9hits-viewer
+          
+          # সরাসরি মেইন ফোল্ডার থেকে রান
+          ./9hits-viewer-linux-x64/9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
+          ./9hits-viewer-linux-x64/9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
+          
+          # প্রসেসটি সচল রাখার জন্য ওয়েট টাইম
+          sleep 340m
