@@ -6,22 +6,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Start 9Hits Farming
+      - name: Farm Points
         run: |
-          # সব প্রয়োজনীয় লাইব্রেরি একবারে ইনস্টল (কোনো আপডেট ছাড়াই)
-          sudo apt-get install -y libnss3 libgbm1 libasound2 libxshmfence1
+          # ১. প্রয়োজনীয় গ্রাফিক্স লাইব্রেরি ইনস্টল করা
+          sudo apt-get update && sudo apt-get install -y libnss3 libgbm1 libasound2 libxshmfence1 libx11-xcb1
           
-          # ডাউনলোড এবং সরাসরি এক্সট্রাক্ট
-          curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 -o 9hits.tar.bz2
-          tar -xjvf 9hits.tar.bz2
+          # ২. ফাইল ডাউনলোড এবং সাথে সাথে আনজিপ করা
+          curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 | tar -xj
           
-          # ফোল্ডারের ভেতরে ঢুকে সরাসরি রান
-          cd 9hits-viewer-linux-x64
-          chmod +x 9hits-viewer
+          # ৩. ফোল্ডারের ভেতরে ঢুকে ফাইলটিকে রান করার অনুমতি দেওয়া
+          chmod +x ./9hits-viewer-linux-x64/9hits-viewer
           
-          # আপনার টোকেন দিয়ে সেশন শুরু
-          ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
-          ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
+          # ৪. সরাসরি ফুল পাথ ব্যবহার করে রান করা (যাতে কোনো এরর না আসে)
+          ./9hits-viewer-linux-x64/9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
+          ./9hits-viewer-linux-x64/9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
           
-          # প্রসেসটি সচল রাখার জন্য অপেক্ষা
+          # ৫. বটটি সচল রাখার জন্য সময় দেওয়া
           sleep 21000
