@@ -5,16 +5,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: 
+      image: mcr.microsoft.com/playwright:v1.40.0-jammy # এটি সব রিকোয়ারমেন্ট সহ একটি রেডি ইমেজ
     steps:
-      - name: Run 9Hits Direct
+      - name: Running 9Hits
         run: |
-          # কোনো আপডেট বা বাড়তি লাইব্রেরি ছাড়াই সরাসরি কাজ শুরু হবে
           curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 -o 9hits.tar.bz2
           tar -xjvf 9hits.tar.bz2
           cd 9hits-viewer-linux-x64
           chmod +x 9hits-viewer
-          
-          # আপনার সঠিক API Key দিয়ে সেশন শুরু
           ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
           ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
         timeout-minutes: 350
