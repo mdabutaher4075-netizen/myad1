@@ -4,21 +4,25 @@ on:
 
 jobs:
   build:
+    # এখানে আমরা ubuntu-latest এর বদলে সব রিকোয়ারমেন্ট সহ ডকার ইমেজ ব্যবহার করছি
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    
     steps:
-      - name: Start Farming
+      - name: Running 9Hits Viewer
         run: |
-          # ডাউনলোড এবং সরাসরি এক্সট্রাক্ট (কোনো এরর ছাড়াই)
-          curl -sL https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 | tar -xj
-          
-          # ফোল্ডারের ভেতরে গিয়ে ফাইল পারমিশন দেওয়া
+          # ডাউনলোড এবং আনজিপ
+          curl -L https://9hits.com/downloads/v3/9hits-viewer-linux-x64.tar.bz2 -o 9hits.tar.bz2
+          tar -xjvf 9hits.tar.bz2
           cd 9hits-viewer-linux-x64
+          
+          # ফাইল রান করার পারমিশন
           chmod +x 9hits-viewer
           
-          # আপনার সঠিক API Key দিয়ে সেশন রান করা
-          # এখানে সেশন ২টা দেওয়া হয়েছে যাতে পয়েন্ট দ্রুত জমা হয়
+          # আপনার এপিআই কী দিয়ে সরাসরি রান
           ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s1 &
           ./9hits-viewer --token=08aa8c374e5713f7a572bae472c75cc4 --allow-ca --session=s2
           
-          # বটের কাজ সচল রাখার জন্য সময়সীমা (প্রায় ৬ ঘণ্টা)
-          sleep 21000
+          # কাজ সচল রাখার জন্য সময়সীমা
+          sleep 340m
